@@ -1,0 +1,38 @@
+# Môi trường
+.env
+.env.test
+.env.production
+
+# Logs
+logs
+*.log
+
+# Thư mục build
+/dist
+/build
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Các file tạm thời
+*.tmp
+*.temp
+.cache
+
+# MongoDB
+*.mongodb
+mongod.lock
+
+# JWT keys
+*.pem
+*.key
+
+# Node modules
+node_modules/
