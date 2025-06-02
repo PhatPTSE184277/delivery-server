@@ -18,7 +18,6 @@ const getUser = async (req, res) => {
             });
         }
         
-        // Trả về thông tin người dùng
         return res.status(200).json({
             user
         });

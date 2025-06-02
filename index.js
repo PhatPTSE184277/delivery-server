@@ -10,6 +10,7 @@ const router = require('./src/routers');
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static('static'));
 
 if (!mongoUrl) {
     throw new Error('MONGO_URL is not defined in environment variables');
