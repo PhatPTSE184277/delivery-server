@@ -3,17 +3,10 @@ const Schema = mongoose.Schema;
 
 const FoodSchema = new Schema(
   {
-    id: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true
-    },
     restaurantId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'Restaurant',
-      trim: true
+      ref: 'Restaurants'
     },
     name: {
       type: String,
@@ -65,6 +58,6 @@ FoodSchema.index({ category: 1 });
 FoodSchema.index({ price: 1 });
 FoodSchema.index({ popular: 1 });
 
-const Food = mongoose.model('Food', FoodSchema);
+const Food = mongoose.model('Foods', FoodSchema);
 
 module.exports = Food;

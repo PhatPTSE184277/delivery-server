@@ -3,12 +3,14 @@ const mongoose = require('mongoose');
 const BookmarkSchema = new mongoose.Schema(
     {
         restaurantId: {
-            type: String,
-            required: true
+            type: mongoose.Schema.ObjectId,
+            required: true,
+            ref: 'Restaurants'
         },
-        username: {
-            type: String,
-            required: true
+        userId: {
+            type: mongoose.Schema.ObjectId,
+            required: true,
+            ref: 'Users'
         }
     },
     {
@@ -16,5 +18,5 @@ const BookmarkSchema = new mongoose.Schema(
     }
 );
 BookmarkSchema.index({ username: 1, restaurantId: 1 }, { unique: true });
-const BookmarkModel = mongoose.model('Bookmark', BookmarkSchema);
+const BookmarkModel = mongoose.model('Bookmarks', BookmarkSchema);
 module.exports = BookmarkModel;

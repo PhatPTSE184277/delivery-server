@@ -3,12 +3,14 @@ const mongoose = require('mongoose');
 const CartSchema = new mongoose.Schema(
     {
         foodId: {
-            type: String,
-            required: true
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'Foods'
         },
-        username: {
-            type: String,
-            required: true
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'Users'
         },
         count: {
             type: Number,
@@ -22,6 +24,6 @@ const CartSchema = new mongoose.Schema(
 );
 
 CartSchema.index({ userId: 1, foodId: 1 }, { unique: true });
-const CartModel = mongoose.model('Cart', CartSchema);
+const CartModel = mongoose.model('Carts', CartSchema);
 
 module.exports = CartModel;

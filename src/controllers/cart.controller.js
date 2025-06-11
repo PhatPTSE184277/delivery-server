@@ -1,12 +1,16 @@
+const mongoose = require('mongoose');
 const CartModel = require('../models/cart.model');
 
 const addToCart = async (req, res) => {
     const { foodId } = req.params;
-    const { username } = req.body;
+    const { userId } = req.body;
 
     try {
         const updatedCart = await CartModel.findOneAndUpdate(
-            { foodId, username },
+            { 
+                foodId: new mongoose.Types.ObjectId(foodId), 
+                userId: new mongoose.Types.ObjectId(userId) 
+            },
             { $inc: { count: 1 } },
             { upsert: true, new: true }
         );
@@ -27,10 +31,13 @@ const addToCart = async (req, res) => {
 
 const removeFromCart = async (req, res) => {
     const { foodId } = req.params;
-    const { username } = req.body;
+    const { userId } = req.body;
 
     try {
-        const cartItem = await CartModel.findOne({ foodId, username });
+        const cartItem = await CartModel.findOne({ 
+            foodId: new mongoose.Types.ObjectId(foodId), 
+            userId: new mongoose.Types.ObjectId(userId) 
+        });
 
         if (!cartItem) {
             return res.status(404).json({
@@ -39,18 +46,21 @@ const removeFromCart = async (req, res) => {
             });
         }
 
-        // If count is 1, remove the item entirely
         if (cartItem.count === 1) {
-            await CartModel.findOneAndDelete({ foodId, username });
+            await CartModel.findOneAndDelete({ 
+                foodId: new mongoose.Types.ObjectId(foodId), 
+                userId: new mongoose.Types.ObjectId(userId) 
+            });
             return res.status(200).json({
                 status: true,
                 message: 'Item removed from cart successfully'
             });
-        }
-        // Otherwise just decrement
-        else {
+        } else {
             const updatedCart = await CartModel.findOneAndUpdate(
-                { foodId, username },
+                { 
+                    foodId: new mongoose.Types.ObjectId(foodId), 
+                    userId: new mongoose.Types.ObjectId(userId) 
+                },
                 { $inc: { count: -1 } },
                 { new: true }
             );
@@ -71,20 +81,20 @@ const removeFromCart = async (req, res) => {
 };
 
 const getCartItems = async (req, res) => {
-    const { username } = req.query;
+    const { userId } = req.query;
 
     try {
         const cartItems = await CartModel.aggregate([
             {
                 $match: { 
-                    username: username 
+                    userId: new mongoose.Types.ObjectId(userId)
                 }
             },
             {
                 $lookup: {
                     from: 'foods',
                     localField: 'foodId',
-                    foreignField: 'id',
+                    foreignField: '_id',
                     as: 'food'
                 }
             },
@@ -97,12 +107,11 @@ const getCartItems = async (req, res) => {
             {
                 $project: {
                     _id: 1,
-                    username: 1,
+                    userId: 1,
                     count: 1,
                     food: {
                         _id: '$food._id',
                         name: '$food.name',
-                        id: '$food.id',
                         price: '$food.price',
                         image: '$food.image',
                         description: '$food.description'

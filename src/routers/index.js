@@ -5,13 +5,16 @@ const RestaurantRouter = require('./restaurant.route');
 const CartRouter = require('./cart.route');
 const FoodRouter = require('./food.route');
 const BookMarkRoute = require('./bookmark.route');
+const AddressRouter = require('./address.route');
+const OrderRouter = require('./order.route');
 
 module.exports = (app) => {
     app.use('/auth', AuthRouter);
-    app.use(VerifyToken);
-    app.use('/user', UserRouter);
-    app.use('/restaurant', RestaurantRouter);
-    app.use('/cart', CartRouter);
-    app.use('/food', FoodRouter);
-    app.use('/bookmark', BookMarkRoute)
+    app.use('/user', VerifyToken, UserRouter);
+    app.use('/restaurant', VerifyToken, RestaurantRouter);
+    app.use('/cart', VerifyToken, CartRouter);
+    app.use('/food', VerifyToken, FoodRouter);
+    app.use('/bookmark', VerifyToken, BookMarkRoute);
+    app.use('/address', VerifyToken, AddressRouter);
+    app.use('/order', VerifyToken, OrderRouter);
 }

@@ -108,8 +108,9 @@ const login = async (req, res) => {
 
         res.status(200).json({
             message: 'Login successfully',
-             data: {
+            data: {
                 token,
+                _id: user._id,
                 username: user.username,
                 email: user.email
             }
@@ -117,50 +118,6 @@ const login = async (req, res) => {
     } catch (error) {
         res.status(404).json({
             message: error.message
-        });
-    }
-};
-
-const refreshToken = async (req, res) => {
-    try {
-        const refreshToken = req.body.refreshToken;
-        
-        if (!refreshToken) {
-            return res.status(401).json({
-                message: 'Refresh token is required'
-            });
-        }
-        
-        const decoded = jwt.verify(refreshToken, process.env.SECRET_KEY);
-        
-        const user = await UserModel.findById(decoded._id);
-        if (!user) {
-            return res.status(404).json({
-                message: 'User not found'
-            });
-        }
-        
-        const newAccessToken = await getAccessToken({
-            _id: user._id,
-            email: user.email,
-            username: user.username 
-        }); 
-        
-        return res.status(200).json({
-            message: 'Token refreshed successfully',
-            data: {
-                token: newAccessToken
-            }
-        });
-    } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({
-                message: 'Refresh token has expired, please login again'
-            });
-        }
-        
-        return res.status(401).json({
-            message: error.message || 'Invalid refresh token'
         });
     }
 };
@@ -173,4 +130,4 @@ const validateToken = (req, res) => {
     });
 };
 
-module.exports = { register, login, refreshToken, validateToken };
+module.exports = { register, login, validateToken };

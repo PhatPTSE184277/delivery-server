@@ -6,6 +6,7 @@ require('dotenv').config();
 const app = express();
 const mongoUrl = process.env.MONGO_URL;
 const port = process.env.PORT || 8080;
+const baseUrl = process.env.BASE_URL || 'http://localhost:';
 const router = require('./src/routers');
 
 app.use(express.json());
@@ -20,8 +21,8 @@ router(app);
 
 connectDB(mongoUrl)
     .then(() => {
-        app.listen(port, '0.0.0.0', () => {
-            console.log(`Server is starting at http://0.0.0.0:${port}`);
+        app.listen(port, () => {
+            console.log(`Server is starting at ${baseUrl}${port}`);
         });
     })
     .catch((error) => {

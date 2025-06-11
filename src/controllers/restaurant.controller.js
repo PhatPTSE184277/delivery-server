@@ -1,19 +1,21 @@
+const Food = require('../models/food.model');
 const RestaurantModel = require('../models/restaurant.model');
+const mongoose = require('mongoose');
 
 const getAllRestaurants = async (req, res) => {
     try {
         const restaurants = await RestaurantModel.find();
-        
+
         if (!restaurants || restaurants.length === 0) {
             return res.status(404).json({
                 message: 'No restaurants found'
             });
         }
-        
+
         return res.status(200).json({
-          data: {
-            restaurants
-          }
+            data: {
+                restaurants
+            }
         });
     } catch (error) {
         console.error('Get restaurant error:', error);
@@ -26,29 +28,24 @@ const getAllRestaurants = async (req, res) => {
 const getRestaurant = async (req, res) => {
     const { id } = req.params;
     try {
-        const restaurant = await RestaurantModel.aggregate([
-            {
-                $match: { id: id }
-            },
-            {
-                $lookup: {
-                    from: 'foods',
-                    localField: 'id',
-                    foreignField: 'restaurantId',
-                    as: 'foods'
-                }
-            }
-        ]);
+        const restaurant = await RestaurantModel.findById(id);
 
-        if (!restaurant || restaurant.length === 0) {
+        if (!restaurant) {
             return res.status(404).json({
                 message: 'No restaurant found'
             });
         }
-        
+
+        const foods = await Food.find({
+            restaurantId: new mongoose.Types.ObjectId(id)
+        });
+
         return res.status(200).json({
             data: {
-                restaurant: restaurant[0]
+                restaurant: {
+                    ...restaurant.toObject(),
+                    foods
+                }
             }
         });
     } catch (error) {
@@ -57,6 +54,6 @@ const getRestaurant = async (req, res) => {
             message: 'Internal server error'
         });
     }
-}
+};
 
-module.exports = { getAllRestaurants, getRestaurant }
+module.exports = { getAllRestaurants, getRestaurant };
