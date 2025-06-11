@@ -9,10 +9,19 @@ const UserShema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true
     },
     password: {
         type: String,
         required: true,
+    },
+    isEmailVerified: {
+        type: Boolean,
+        default: false
+    },
+    emailOTP: {
+        type: String,
+        default: null
     }
 }, {
     timestamps: true
